@@ -4,9 +4,6 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-let users = [
-  { username: "shane", password: "pass123" },
-  { username: "joseph", password: "passxyz" }
 
 public_users.post("/register", (req,res) => {
   const { username, password } = req.body;
