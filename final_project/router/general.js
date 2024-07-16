@@ -1,9 +1,38 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Endpoint to get the list of books using Promises
+public_users.get('/promises', function (req, res) {
+  axios.get('http://localhost:5001/')
+    .then(response => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(response.data);
+    })
+    .catch(error => {
+      res.status(500).json({ message: 'Error fetching books', error: error.message });
+    });
+});
+
+// Endpoint to get the list of books using async-await
+public_users.get('/async', async function (req, res) {
+  try {
+    const response = await axios.get('http://localhost:5001/');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching books', error: error.message });
+  }
+});
+
+// Fallback route to get the list of books
+public_users.get('/', function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(books);
+});
 
 public_users.post("/register", (req,res) => {
   const { username, password } = req.body;
