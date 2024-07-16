@@ -5,6 +5,32 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
+// Helper function to fetch data from the external server
+const fetchData = async (url) => {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching data from ${url}: ${error.message}`);
+  }
+};
+
+// Endpoint to get book details by author using async-await
+public_users.get('/author/async/:author', async function (req, res) {
+  const author = req.params.author;
+  try {
+    const data = await fetchData('http://localhost:5001/');
+    const booksByAuthor = Object.values(data).filter(book => book.author === author);
+    if (booksByAuthor.length > 0) {
+      res.json(booksByAuthor);
+    } else {
+      res.status(404).json({ message: 'No books found by this author' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 // Endpoint to get book details by ISBN using Promises
 public_users.get('/isbn/promises/:isbn', function (req, res) {
