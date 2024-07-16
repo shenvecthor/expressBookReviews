@@ -15,6 +15,21 @@ const fetchData = async (url) => {
   }
 };
 
+// Endpoint to get book details by title using Promises
+public_users.get('/title/promises/:title', function (req, res) {
+  const title = req.params.title;
+  fetchData('http://localhost:5001/')
+    .then(data => {
+      const booksByTitle = Object.values(data).filter(book => book.title === title);
+      if (booksByTitle.length > 0) {
+        res.json(booksByTitle);
+      } else {
+        res.status(404).json({ message: 'No books found with this title' });
+      }
+    })
+    .catch(error => res.status(500).json({ message: error.message }));
+});
+
 // Endpoint to get book details by author using async-await
 public_users.get('/author/async/:author', async function (req, res) {
   const author = req.params.author;
