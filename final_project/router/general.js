@@ -46,29 +46,19 @@ public_users.get('/author/async/:author', async function (req, res) {
   }
 });
 
-
-// Endpoint to get book details by ISBN using Promises
-public_users.get('/isbn/promises/:isbn', function (req, res) {
-  const isbn = req.params.isbn;
-  axios.get(`http://localhost:5001/`)
-    .then(response => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(response.data);
-    })
-    .catch(error => {
-      res.status(500).json({ message: 'Error fetching book details', error: error.message });
-    });
-});
-
 // Endpoint to get book details by ISBN using async-await
 public_users.get('/isbn/async/:isbn', async function (req, res) {
   const isbn = req.params.isbn;
   try {
-    const response = await axios.get(`http://localhost:5001/`);
-    res.setHeader('Content-Type', 'application/json');
-    res.send(response.data);
+    const data = await fetchData(`http://localhost:5001/`);
+    const book = Object.values(data).find(book => book.isbn === isbn);
+    if (book) {
+      res.json(book);
+    } else {
+      res.status(404).json({ message: 'Book not found' });
+    }
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching book details', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 

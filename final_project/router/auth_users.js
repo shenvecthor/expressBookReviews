@@ -5,7 +5,6 @@ const regd_users = express.Router();
 
 let users = [
   { username: "shane", password: "pass123" },
-  { username: "jane", password: "password456" }
 ];
 
 const secretKey = "secret_key";
